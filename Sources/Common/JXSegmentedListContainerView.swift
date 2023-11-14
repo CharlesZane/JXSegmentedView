@@ -251,6 +251,36 @@ open class JXSegmentedListContainerView: UIView, JXSegmentedViewListContainer, J
         listWillAppear(at: currentIndex)
         listDidAppear(at: currentIndex)
     }
+    
+    open func reload() {
+        
+        guard let dataSource = dataSource else { return }
+        let titiesCount = dataSource.numberOfLists(in: self) 
+        if currentIndex < 0 || currentIndex >= titiesCount {
+            defaultSelectedIndex = 0
+            currentIndex = 0
+        }
+        var indexs: [Int] = []
+        validListDict.forEach { (key: Int, list: JXSegmentedListContainerViewListDelegate) in
+            if key >= titiesCount {
+                indexs.append(key)
+                if let listVC = list as? UIViewController {
+                    listVC.removeFromParent()
+                }
+                list.listView().removeFromSuperview() 
+            }
+        }
+        indexs.forEach { index in
+            validListDict.removeValue(forKey: index) 
+        }
+        if type == .scrollView {
+            scrollView.contentSize = CGSize(width: scrollView.bounds.size.width*CGFloat(dataSource.numberOfLists(in: self)), height: scrollView.bounds.size.height)
+        }else {
+            collectionView.reloadData()
+        }
+        listWillAppear(at: currentIndex)
+        listDidAppear(at: currentIndex)
+    }
 
     //MARK: - Private
     func initListIfNeeded(at index: Int) {

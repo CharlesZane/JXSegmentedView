@@ -27,6 +27,7 @@ public protocol JXSegmentedViewListContainer {
     var defaultSelectedIndex: Int { set get }
     func contentScrollView() -> UIScrollView
     func reloadData()
+    func reload()
     func didClickSelectedItem(at index: Int)
 }
 
@@ -283,7 +284,7 @@ open class JXSegmentedView: UIView, JXSegmentedViewRTLCompatible {
 
     open func reloadData() {
         reloadDataWithoutListContainer()
-        listContainer?.reloadData()
+        listContainer?.reload()
     }
 
     open func reloadDataWithoutListContainer() {
